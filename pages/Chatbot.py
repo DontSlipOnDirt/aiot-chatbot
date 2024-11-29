@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 
 # Initialize session state for storing OpenAI token and messages
 if "openai_token" not in st.session_state:
@@ -40,22 +40,40 @@ if user_input := st.chat_input("Type your message here..."):
     # Generate a response if OpenAI token is provided
     if st.session_state.openai_token:
         try:
-            openai.api_key = st.session_state.openai_token
+            client = OpenAI(api_key=st.session_state.openai_token)
 
-            response = openai.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=st.session_state.messages
-            )
+            if "openai_model" not in st.session_state:
+                st.session_state["openai_model"] = "gpt-3.5-turbo"
 
-            # bot_message = response["choices"][0]["message"]["content"]
-            bot_message = response
+            if "messages" not in st.session_state:
+                st.session_state.messages = []
+
+            for message in st.session_state.messages:
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
         except Exception as e:
             bot_message = f"Error: {e}"
 
         # Append bot response to the conversation
-        st.session_state.messages.append({"role": "assistant", "content": bot_message})
-        with st.chat_message("assistant"):
-            st.markdown(bot_message)
+        if prompt := st.chat_input("What is up?"):
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"):
+                st.markdown(prompt)
+
+            with st.chat_message("assistant"):
+                stream = client.chat.completions.create(
+                    model=st.session_state["openai_model"],
+                    messages=[
+                        {"role": m["role"], "content": m["content"]}
+                        for m in st.session_state.messages
+                    ],
+                    stream=True,
+                )
+                response = st.write_stream(stream)
+            st.session_state.messages.append({"role": "assistant", "content": response})
+        # st.session_state.messages.append({"role": "assistant", "content": bot_message})
+        # with st.chat_message("assistant"):
+        #     st.markdown(bot_message)
     else:
         st.error("Please enter your OpenAI API key in the sidebar.")
