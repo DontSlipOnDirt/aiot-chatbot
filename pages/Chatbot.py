@@ -41,11 +41,15 @@ if user_input := st.chat_input("Type your message here..."):
     if st.session_state.openai_token:
         try:
             openai.api_key = st.session_state.openai_token
-            response = openai.ChatCompletion.create(
+
+            response = openai.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=st.session_state.messages
             )
-            bot_message = response["choices"][0]["message"]["content"]
+
+            # bot_message = response["choices"][0]["message"]["content"]
+            bot_message = response
+
         except Exception as e:
             bot_message = f"Error: {e}"
 
