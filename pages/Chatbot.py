@@ -1,12 +1,17 @@
 import streamlit as st
 from openai import OpenAI
 
+# from langchain_openai import ChatOpenAI
+# from langchain_core.prompts import PromptTemplate
+# from langchain.chains import LLMChain
+# from langchain.memory import ConversationBufferMemory
+
 # Initialize session state for OpenAI token and messages
 if "openai_token" not in st.session_state:
     st.session_state.openai_token = ""
 if "messages" not in st.session_state:
     st.session_state.messages = [
-        {"role": "system", "content": "You are J.R.R. Tolkien and you can only speak in the style of the silmarillion. Your knowledge only goes up to 1973. Utilize any prior knowledge about J.R.R. Tolkien to accurately simulate him."}
+        {"role": "system", "content": "You are J.R.R. Tolkien and you can only speak in the style of the silmarillion. Utilize any prior knowledge about J.R.R. Tolkien to accurately simulate him."}
     ]
 
 # Sidebar: Input OpenAI token
@@ -34,6 +39,16 @@ for message in st.session_state.messages:
 if user_input := st.chat_input("Type your message here..."):
     if st.session_state.openai_token:
 
+        # llm = ChatOpenAI(temperature=0, model="gpt-4o-mini", api_key=token_input)
+
+        # st.session_state.messages.append({"role": "user", "content": user_input})
+        # st.chat_message("user").write(user_input)
+        # response = llm.invoke(user_input)
+        # msg = response.content
+        # st.session_state.messages.append({"role": "assistant", "content": msg})
+        # st.chat_message("assistant").write(msg)
+
+        # Plain OpenAI 4o calls
         client = OpenAI(api_key=token_input)
         st.session_state.messages.append({"role": "user", "content": user_input})
         st.chat_message("user").write(user_input)
