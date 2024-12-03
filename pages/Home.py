@@ -12,8 +12,9 @@ st.markdown("""
         # Technical Approach
         The only used language to write this is Python. For this interface, I used the popular library Streamlit. The LLM calls all use the OpenAI API's gpt-4o-mini chatbot model, which does require an OpenAI API key for access. Thankfully, 4o mini is a relatively cheap model, so there should be minimal charges for any interactions with this chatbot. I handle the interactions with the LLM and the prompting with LangChain as I initially thought it may be a more complicated project then I originally thought. However, it is still convenient to work with LangChain not only because I am familiar with it but also because it has many useful features that can impprove this chatbot in the future.
         
-        # Response Workflow Design
-        ![Diagram of Flow of Chatbot](diagram.png)
+        # Response Workflow Design """)
+st.image("diagram.jpg")
+st.markdown("""
         1. System prompts LLM with how to speak.
         2. User sends message which is added to the conversation.
         3. LLM is prompted with system prompt and conversation.
